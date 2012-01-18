@@ -9,7 +9,7 @@ If you are storing lots of colors and care about memory use you might want
 to use something based on byte types instead.
 
 Also, color types don't verify their validity before converting. If you do
-something like RGBColor{10,20,30}.ToHSV() the results will be undefined. All
+something like RGB{10,20,30}.ToHSL() the results will be undefined. All
 values must be between 0 and 1.
 
 By Brandon Thomson

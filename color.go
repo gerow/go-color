@@ -12,7 +12,7 @@
 	to use something based on byte types instead.
 
 	Also, color types don't verify their validity before converting. If you do
-	something like RGBColor{10,20,30}.ToHSV() the results will be undefined. All
+	something like RGB{10,20,30}.ToHSL() the results will be undefined. All
 	values must be between 0 and 1.
 */
 
@@ -24,29 +24,29 @@ import (
 	"fmt"
 )
 
-type RGBColor struct {
+type RGB struct {
 	R, G, B float64
 }
 
-// Takes a string like '#123456' or 'ABCDEF' and returns an RGBColor
-func HTMLToRGB(in string) (RGBColor, os.Error) {
+// Takes a string like '#123456' or 'ABCDEF' and returns an RGB
+func HTMLToRGB(in string) (RGB, os.Error) {
 	if in[0] == '#' {
 		in = in[1:]
 	}
 
 	if len(in) != 6 {
-		return RGBColor{}, os.NewError("Invalid string length")
+		return RGB{}, os.NewError("Invalid string length")
 	}
 
 	var r, g, b byte
 	if n, err := fmt.Sscanf(in, "%2x%2x%2x", &r, &g, &b); err != nil || n != 3 {
-		return RGBColor{}, err
+		return RGB{}, err
 	}
 
-	return RGBColor{float64(r), float64(g), float64(b)}, nil
+	return RGB{float64(r), float64(g), float64(b)}, nil
 }
 
-func (c RGBColor) ToHSL() HSLColor {
+func (c RGB) ToHSL() HSL {
 	var h, s, l float64
 
 	r := c.R
@@ -63,7 +63,7 @@ func (c RGBColor) ToHSL() HSLColor {
 	delta := max - min
 	if delta == 0 {
 		// it's gray
-		return HSLColor{0, 0, l}
+		return HSL{0, 0, l}
 	}
 
 	// it's not gray
@@ -94,14 +94,14 @@ func (c RGBColor) ToHSL() HSLColor {
 		h -= 1
 	}
 
-	return HSLColor{h, s, l}
+	return HSL{h, s, l}
 }
 
-func (c RGBColor) ToHTML() string {
+func (c RGB) ToHTML() string {
 	return fmt.Sprintf("%2x%2x%2x", byte(c.R), byte(c.G), byte(c.B))
 }
 
-type HSLColor struct {
+type HSL struct {
 	H, S, L float64
 }
 
@@ -123,14 +123,14 @@ func hueToRGB(v1, v2, h float64) float64 {
 	return v1
 }
 
-func (c HSLColor) ToRGB() RGBColor {
+func (c HSL) ToRGB() RGB {
 	h := c.H
 	s := c.S
 	l := c.L
 
 	if s == 0 {
 		// it's gray
-		return RGBColor{l, l, l}
+		return RGB{l, l, l}
 	}
 
 	var v1, v2 float64
@@ -146,9 +146,9 @@ func (c HSLColor) ToRGB() RGBColor {
 	g := hueToRGB(v1, v2, h)
 	b := hueToRGB(v1, v2, h-(1.0/3.0))
 
-	return RGBColor{r, g, b}
+	return RGB{r, g, b}
 }
 
-func (c HSLColor) ToHTML() string {
+func (c HSL) ToHTML() string {
 	return c.ToRGB().ToHTML()
 }
