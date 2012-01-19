@@ -43,7 +43,7 @@ func HTMLToRGB(in string) (RGB, os.Error) {
 		return RGB{}, err
 	}
 
-	return RGB{float64(r), float64(g), float64(b)}, nil
+	return RGB{float64(r) / 255, float64(g) / 255, float64(b) / 255}, nil
 }
 
 func (c RGB) ToHSL() HSL {
@@ -97,8 +97,11 @@ func (c RGB) ToHSL() HSL {
 	return HSL{h, s, l}
 }
 
+// A nudge to make truncation round to nearest number instead of flooring
+const delta = 1 / 512.0
+
 func (c RGB) ToHTML() string {
-	return fmt.Sprintf("%02x%02x%02x", byte(c.R), byte(c.G), byte(c.B))
+	return fmt.Sprintf("%02x%02x%02x", byte((c.R+delta)*255), byte((c.G+delta)*255), byte((c.B+delta)*255))
 }
 
 type HSL struct {
