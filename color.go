@@ -98,7 +98,7 @@ func (c RGB) ToHSL() HSL {
 }
 
 func (c RGB) ToHTML() string {
-	return fmt.Sprintf("%2x%2x%2x", byte(c.R), byte(c.G), byte(c.B))
+	return fmt.Sprintf("%02x%02x%02x", byte(c.R), byte(c.G), byte(c.B))
 }
 
 type HSL struct {
