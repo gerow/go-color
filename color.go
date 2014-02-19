@@ -19,9 +19,9 @@
 package color
 
 import (
-	"math"
-	"os"
+	"errors"
 	"fmt"
+	"math"
 )
 
 type RGB struct {
@@ -29,13 +29,13 @@ type RGB struct {
 }
 
 // Takes a string like '#123456' or 'ABCDEF' and returns an RGB
-func HTMLToRGB(in string) (RGB, os.Error) {
+func HTMLToRGB(in string) (RGB, error) {
 	if in[0] == '#' {
 		in = in[1:]
 	}
 
 	if len(in) != 6 {
-		return RGB{}, os.NewError("Invalid string length")
+		return RGB{}, errors.New("Invalid string length")
 	}
 
 	var r, g, b byte
@@ -53,8 +53,8 @@ func (c RGB) ToHSL() HSL {
 	g := c.G
 	b := c.B
 
-	max := math.Fmax(math.Fmax(r, g), b)
-	min := math.Fmin(math.Fmin(r, g), b)
+	max := math.Max(math.Max(r, g), b)
+	min := math.Min(math.Min(r, g), b)
 
 	// Luminosity is the average of the max and min rgb color intensities.
 	l = (max + min) / 2
